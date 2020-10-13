@@ -4,18 +4,19 @@
 nb_sensors = 10000
 theoritical_temperature = 20
 var_max_mean = 1 # mean temperature deviation would be between [theoritical_temp - max_var_mean, theoritical_temp + max_var_mean]
-var_max_std = 4
+var_max_std = 1
+min_prct_reception = 50
 
 # constants for grade rate, and cost function
 mean_sensor_constant = 1
 std_sensor_constant = 1
 
-confidence_interval_subset_constant = 1
-energie_consumption_subset_constant = 1
+# confidence_interval_subset_constant = 1
+# energie_consumption_subset_constant = 1
 
 
 
-max_subset_nb = 50
+max_subset_nb = 20
 
 
 nb_simulation_per_sensor = 100
@@ -24,4 +25,4 @@ sensor_file_name = "sensor_caracteristics_storage.json"
 
 
 # statics
-energy_consummed_per_emission = 1
+energy_consumed_per_emission = 1
