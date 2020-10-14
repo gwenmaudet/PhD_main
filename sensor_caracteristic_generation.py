@@ -10,7 +10,7 @@ def create_sensors_caracteristic_storage():
         print("FILE REMOVED !")
     json_file = []
     for i in range (conf.nb_sensors):
-        mean = random.uniform(conf.theoritical_temperature - conf.var_max_mean, conf.theoritical_temperature + conf.var_max_mean)
+        mean = random.uniform(conf.theoritical_temperature - conf.var__mean_dif, conf.theoritical_temperature + conf.var__mean_dif)
         std = random.uniform(0, conf.var_max_std)
         prct_reception = random.uniform(conf.min_prct_reception, 100)
         json_file.append({'id': i,'mean': mean, 'std': std, 'prct_reception': prct_reception})

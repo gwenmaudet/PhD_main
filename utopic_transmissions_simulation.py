@@ -5,32 +5,7 @@ import statistics
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
-def proportion_of_an_interval_into_another_one(inter1, inter2): #proportion of the inter1 into the inter 2
-    inter2_len = (inter2[1] - inter2[0])
-    if inter1[1]<inter2[0] or inter1[0]>inter2[1]:
-        return 0
-    elif inter1[0] > inter2[0] and inter1[1]<inter2[1]:
-        return (inter1[1] - inter1[0]) * 100 / inter2_len
-    elif inter1[0] < inter2[0] and inter1[1] > inter2[1]:
-        return 100
-    elif inter1[0] < inter2[0]:
-        return (inter1[1] - inter2[0]) / inter2_len
-    elif inter1[1] > inter2[1]:
-        return (inter2[1] - inter1[0]) / inter2_len
-    else:
-        print("ERROR")
-        return
-
-
-
-def sensor_evaluation(inter1, simulation):
-    T_prim = statistics.mean(simulation)
-    std_prim = statistics.pstdev(simulation)
-    prop = 1.96 * std_prim / math.sqrt(len(simulation))
-    inter2 = (T_prim - prop, T_prim + prop)
-    print(inter2)
-    return proportion_of_an_interval_into_another_one(inter1, inter2)
+import distance_functions
 
 
 def take_the_evaluation_parameter(elt):
@@ -41,19 +16,21 @@ def sensor_simulation():
     with open(conf.sensor_file_name) as json_file:
         sensors_caracteristics = json.load(json_file)
     sensors_list = []
-    simulations = np.array([])
+    simulations = {i: [] for i in range(conf.nb_simulation_per_experiment)}
     for caracteristic in sensors_caracteristics:
         new_sensor = sensor_class.sensor(caracteristic['mean'], caracteristic['std'], caracteristic['prct_reception'], caracteristic['id'])
-        simulation = new_sensor.multi_simulation(conf.nb_simulation_per_sensor)
-        simulations = np.concatenate((simulation, simulations), axis=None)
+        simulation, simulations = new_sensor.multi_simulation(conf.nb_simulation_per_experiment, simulations)
         sensors_list.append({'sensor': new_sensor, 'simulation': simulation})
-    T = statistics.mean(simulations)
-    std = statistics.pstdev(simulations)
-    prop = 1.96 * std / math.sqrt(len(simulations))
-    inter1 = (T - prop, T + prop)
-    print(inter1)
+    sims_values = simulations.values()
+    #T = statistics.mean(simulations)
+    # std = statistics.pstdev(simulations)
+    # prop = 1.96 * std / math.sqrt(len(simulations))
+    # inter1 = (T - prop, T + prop)
     for sensor in sensors_list:
-        evaluation = sensor_evaluation(inter1, sensor['simulation'])
+        if conf.sensor_evaluation == 'Dynamic_time_warping':
+            evaluation, cost_matrix, acc_cost_matrix, path = distance_functions.Dynamic_time_warping()
+        """elif conf.sensor_evaluation == 'inter_inclusions_of_confidence_intervals':
+            evaluation = distance_functions.inter_inclusions_of_confidence_intervals(inter1, sensor['simulation'])"""
         sensor['evaluation'] = evaluation
     sensors_list = sorted(sensors_list, key=take_the_evaluation_parameter, reverse=True)
     return sensors_list
@@ -68,7 +45,7 @@ def find_subset_from_sensors_evaluation(confidence_interval_subset_constant, ene
             simulations = np.concatenate((simulations, sensors_list[j]['simulation']), axis=None)
             sensors_ids.append(sensors_list[j]['sensor'].id)
         subset_evaluation.append({'evaluation': confidence_interval_subset_constant * (statistics.stdev(simulations) / math.sqrt(len(simulations)))
-                                 + energie_consumption_subset_constant * conf.energy_consumed_per_emission *  (i + 1) * conf.nb_simulation_per_sensor,
+                                 + energie_consumption_subset_constant * conf.energy_consumed_per_emission *  (i + 1) * conf.nb_simulation_per_experiment,
 
                                   'ids': sensors_ids})
     subset_evaluation = sorted(subset_evaluation, key=take_the_evaluation_parameter)
@@ -80,6 +57,8 @@ def find_subset_from_sensors_evaluation(confidence_interval_subset_constant, ene
 
 def pareto_representation_nb_sensors_required(nb_foot_step,min,max):
     sensor_list = sensor_simulation()
+    for sensor in sensor_list:
+        print(sensor['evaluation'])
     x_values = [(min + (max - min) * i / nb_foot_step) for i in range(nb_foot_step)]
     y = []
     print(x_values)
