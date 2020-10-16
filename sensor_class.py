@@ -3,12 +3,13 @@ import random
 
 
 class sensor():
-    def __init__(self, mean, std, prct_reception, id):  # emission frequence = nb of emission in 1 day
+    def __init__(self, mean, std, prct_reception, id, emission_periode=10, emssion_sending_beggining=0):  # emission frequence = nb of emission in 1 day
         self.mean = mean
         self.std = std
         self.prct_reception = prct_reception
         self.id = id
-
+        self.emission_periode =emission_periode
+        self.emssion_sending_beggining = emssion_sending_beggining
     def one_simulation(self):
         p = random.random()
         if p < self.prct_reception:

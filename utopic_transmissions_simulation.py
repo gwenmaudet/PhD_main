@@ -26,7 +26,7 @@ def proportion_of_an_interval_into_another_one(inter1, inter2): #proportion of t
 
 def sensor_evaluation(inter1, simulation):
     T_prim = statistics.mean(simulation)
-    std_prim = statistics.pstdev(simulation)
+    std_prim = statistics.stdev(simulation)
     prop = 1.96 * std_prim / math.sqrt(len(simulation))
     inter2 = (T_prim - prop, T_prim + prop)
     print(inter2)
@@ -48,7 +48,7 @@ def sensor_simulation():
         simulations = np.concatenate((simulation, simulations), axis=None)
         sensors_list.append({'sensor': new_sensor, 'simulation': simulation})
     T = statistics.mean(simulations)
-    std = statistics.pstdev(simulations)
+    std = statistics.stdev(simulations)
     prop = 1.96 * std / math.sqrt(len(simulations))
     inter1 = (T - prop, T + prop)
     print(inter1)
