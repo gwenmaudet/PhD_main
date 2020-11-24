@@ -1,0 +1,37 @@
+[
+    {
+        "id": 0,
+        "std": 0.9887042157119954,
+        "prct_reception": 0.4762704463526847,
+        "emssion_period": 2,
+        "first_emssion": 0
+    },
+    {
+        "id": 1,
+        "std": 0.8490848214972226,
+        "prct_reception": 0.9233789242089732,
+        "emssion_period": 2,
+        "first_emssion": 1
+    },
+    {
+        "id": 2,
+        "std": 1.3221498313168143,
+        "prct_reception": 0.9791121334861608,
+        "emssion_period": 2,
+        "first_emssion": 0
+    },
+    {
+        "id": 3,
+        "std": 0.5660252184402894,
+        "prct_reception": 0.5742265954426877,
+        "emssion_period": 2,
+        "first_emssion": 1
+    },
+    {
+        "id": 4,
+        "std": 0.5981504964613558,
+        "prct_reception": 0.9855031817017468,
+        "emssion_period": 2,
+        "first_emssion": 0
+    }
+]
