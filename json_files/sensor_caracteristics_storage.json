@@ -1,37 +1,352 @@
 [
     {
         "id": 0,
-        "std": 0.9887042157119954,
-        "prct_reception": 0.4762704463526847,
-        "emssion_period": 2,
+        "std": 0.5,
+        "prct_reception": 1,
+        "emssion_period": 5,
         "first_emssion": 0
     },
     {
         "id": 1,
-        "std": 0.8490848214972226,
-        "prct_reception": 0.9233789242089732,
-        "emssion_period": 2,
+        "std": 0.52,
+        "prct_reception": 1,
+        "emssion_period": 5,
         "first_emssion": 1
     },
     {
         "id": 2,
-        "std": 1.3221498313168143,
-        "prct_reception": 0.9791121334861608,
-        "emssion_period": 2,
-        "first_emssion": 0
+        "std": 0.54,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 2
     },
     {
         "id": 3,
-        "std": 0.5660252184402894,
-        "prct_reception": 0.5742265954426877,
-        "emssion_period": 2,
-        "first_emssion": 1
+        "std": 0.56,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 3
     },
     {
         "id": 4,
-        "std": 0.5981504964613558,
-        "prct_reception": 0.9855031817017468,
-        "emssion_period": 2,
-        "first_emssion": 0
+        "std": 0.58,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 4
+    },
+    {
+        "id": 5,
+        "std": 0.6,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 5
+    },
+    {
+        "id": 6,
+        "std": 0.62,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 6
+    },
+    {
+        "id": 7,
+        "std": 0.64,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 7
+    },
+    {
+        "id": 8,
+        "std": 0.66,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 8
+    },
+    {
+        "id": 9,
+        "std": 0.6799999999999999,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 9
+    },
+    {
+        "id": 10,
+        "std": 0.7,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 10
+    },
+    {
+        "id": 11,
+        "std": 0.72,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 11
+    },
+    {
+        "id": 12,
+        "std": 0.74,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 12
+    },
+    {
+        "id": 13,
+        "std": 0.76,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 13
+    },
+    {
+        "id": 14,
+        "std": 0.78,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 14
+    },
+    {
+        "id": 15,
+        "std": 0.8,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 15
+    },
+    {
+        "id": 16,
+        "std": 0.8200000000000001,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 16
+    },
+    {
+        "id": 17,
+        "std": 0.8400000000000001,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 17
+    },
+    {
+        "id": 18,
+        "std": 0.86,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 18
+    },
+    {
+        "id": 19,
+        "std": 0.88,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 19
+    },
+    {
+        "id": 20,
+        "std": 0.9,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 20
+    },
+    {
+        "id": 21,
+        "std": 0.9199999999999999,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 21
+    },
+    {
+        "id": 22,
+        "std": 0.94,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 22
+    },
+    {
+        "id": 23,
+        "std": 0.96,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 23
+    },
+    {
+        "id": 24,
+        "std": 0.98,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 24
+    },
+    {
+        "id": 25,
+        "std": 1.0,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 25
+    },
+    {
+        "id": 26,
+        "std": 1.02,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 26
+    },
+    {
+        "id": 27,
+        "std": 1.04,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 27
+    },
+    {
+        "id": 28,
+        "std": 1.06,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 28
+    },
+    {
+        "id": 29,
+        "std": 1.08,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 29
+    },
+    {
+        "id": 30,
+        "std": 1.1,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 30
+    },
+    {
+        "id": 31,
+        "std": 1.12,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 31
+    },
+    {
+        "id": 32,
+        "std": 1.1400000000000001,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 32
+    },
+    {
+        "id": 33,
+        "std": 1.1600000000000001,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 33
+    },
+    {
+        "id": 34,
+        "std": 1.1800000000000002,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 34
+    },
+    {
+        "id": 35,
+        "std": 1.2,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 35
+    },
+    {
+        "id": 36,
+        "std": 1.22,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 36
+    },
+    {
+        "id": 37,
+        "std": 1.24,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 37
+    },
+    {
+        "id": 38,
+        "std": 1.26,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 38
+    },
+    {
+        "id": 39,
+        "std": 1.28,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 39
+    },
+    {
+        "id": 40,
+        "std": 1.3,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 40
+    },
+    {
+        "id": 41,
+        "std": 1.3199999999999998,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 41
+    },
+    {
+        "id": 42,
+        "std": 1.3399999999999999,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 42
+    },
+    {
+        "id": 43,
+        "std": 1.3599999999999999,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 43
+    },
+    {
+        "id": 44,
+        "std": 1.38,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 44
+    },
+    {
+        "id": 45,
+        "std": 1.4,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 45
+    },
+    {
+        "id": 46,
+        "std": 1.42,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 46
+    },
+    {
+        "id": 47,
+        "std": 1.44,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 47
+    },
+    {
+        "id": 48,
+        "std": 1.46,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 48
+    },
+    {
+        "id": 49,
+        "std": 1.48,
+        "prct_reception": 1,
+        "emssion_period": 5,
+        "first_emssion": 49
     }
 ]

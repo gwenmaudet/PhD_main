@@ -1,14 +1,21 @@
 # 1st prgrm : simulation in non realistic telecom
 
 #generation of sensors
-nb_sensors = 5
-theoritical_temperature = 12
+nb_sensors = 2000
+
+
+def theoritical_temperature(t):
+    if t % 200 < 100:
+        return 15
+    else:
+        return 10
+
 var_max_mean = 0 # mean temperature deviation would be between [theoritical_temp - max_var_mean, theoritical_temp + max_var_mean]
 var_max_std = 2
 min_prct_reception = 0.2
+sensor_emission_period = 50
 
-sensor_emission_period = 2
-
+time_of_exp = 500
 
 
 #FILE NAMES
@@ -18,15 +25,17 @@ sensor_with_reception_file_name = "json_files\sensor_with_reception.json"
 
 
 """real_time_temperature_modelisation"""
-time_of_exp = 10
-quantille_gauss = 2.326 #representing quantille of gaussian for 99%
-quantille_student = [31.82,  6.965, 4.541,  3.747,  3.365, 3.143,  2.998, 2.896,  2.821, 2.764,
-                      2.718, 2.681,  2.650, 2.624, 2.602,  2.583,  2.567,  2.552,  2.539,  2.528,
-                      2.518, 2.508, 2.500, 2.492, 2.485,  2.479,  2.473, 2.467,  2.462, 2.457]
 
+quantille_gauss = 2.576 #representing quantille of gaussian for 99%
+t_test_percentage = 0.995
 delta_theta = 0.5 # the degre precision for the value measured [theta +- delta_theta]
 
 
+"""experiment"""
+sensor_sample = [1000, 500, 250, 100]
+nb_of_iteration = 10
+
+consuption_for_one_sensor = 1
 
 ###########
 """modeling result frome IoT transmission"""
