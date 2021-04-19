@@ -1,19 +1,19 @@
 import math
 import numpy as np
 import statistics
-k_alpha = 3.090 #representing quantille of gaussian for 99%
 
 nb_of_iteration = 1000
 
-nb_of_values_of_r = 500
 
-h = 14.5
+nb_of_initial_values = 100
+
+h = 27
 
 nb_of_Dthet = 200
 Dthets = [i * 2 /nb_of_Dthet for i in range(nb_of_Dthet)]
 
-def add_new_value_and_raise(Dthet,S, min_S,max_S, h,X_i):
-    new_S = S[-1] + X_i - Dthet
+def add_new_value_and_raise(S, min_S,max_S, h,X_i):
+    new_S = S[-1] + X_i
     S.append(new_S)
     if new_S>max_S:
         max_S = new_S
@@ -26,30 +26,49 @@ def add_new_value_and_raise(Dthet,S, min_S,max_S, h,X_i):
     return S, min_S, max_S, boolean
 
 
-def time_before_detection(sig, Dthet):
+def time_before_detection(sig, Dthet, nb_of_iteration):
     nb_of_values = []
     for p in range(nb_of_iteration):
-        i = 1
         S = [np.random.normal(0, sig)]
         min_S = S[0]
         max_S = S[0]
+        for i in range (1, nb_of_initial_values):
+            X_i = np.random.normal(0, sig)
+            S, min_S, max_S, detected = add_new_value_and_raise(S, min_S, max_S, h, X_i)
+        i = 0
         detected = False
         while detected is False:
-            X_i = np.random.normal(0, sig)
+            X_i = np.random.normal(Dthet, sig)
             i += 1
-            S, min_S, max_S, detected = add_new_value_and_raise(Dthet,S, min_S,max_S, h,X_i)
+            S, min_S, max_S, detected = add_new_value_and_raise(S, min_S,max_S, h,X_i)
         nb_of_values.append(i)
     return statistics.mean(nb_of_values), statistics.stdev(nb_of_values)
 
 def plot_ARL():
-    time_of_detection = []
-    for Dthet in Dthets:
-        time_of_detection.append(time_before_detection(1, Dthet))
+    std = []
+    mean = []
+    nb_of_iteration = 80000
+    Dthet = 0.45
+    pas = 0.07
+    Dthets = []
+    while Dthet < 1:
+        Dthets.append(Dthet)
+        a, b = time_before_detection(1, Dthet, int(nb_of_iteration))
+        mean.append(a)
+        std.append(2.567 * b / math.sqrt(nb_of_iteration))
+        # print("ok")
+        Dthet += pas
+        pas *= 1.2
+        nb_of_iteration *= 0.9
+        stri = '(' + str(Dthets[-1]) + ',' + str(mean[-1]) + ') +- (0,' + str(std[-1]) + ')'
+        print(stri)
     stri = ''
-    for i in range (nb_of_Dthet):
-        stri += '(' + str(Dthets[i]) + ',' + str(time_of_detection[i]) + ') '
+    for i in range(len(Dthets)):
+        stri += '(' + str(Dthets[i]) + ',' + str(mean[i]) + ') +- (0,' + str(std[i]) + ')'
     print(stri)
 
 if __name__ == "__main__":
-    #print(time_before_detection(1, 0))
+    #a, b = time_before_detection(1, 0, 100000)
+    #print(a)
+    #print(2.567 * b / math.sqrt(nb_of_iteration))
     plot_ARL()

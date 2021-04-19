@@ -4,13 +4,14 @@ import statistics
 import time
 from scipy.stats import norm
 import matplotlib.pyplot as plt
-k_alpha = 3.090 #representing quantille of gaussian for 99%
 
 nb_of_iteration = 1000
 
-nb_of_values_of_r = 1000
+nb_of_values_of_r = 500
 
-h = 3
+nb_of_initial_values = 100
+
+h = 3.17
 
 nb_of_Dthet = 10
 Dthets = [i *1 /nb_of_Dthet for i in range(nb_of_Dthet)] #thet step for ARL function
@@ -136,18 +137,22 @@ def update_function_and_find_if_detected_or_not_fixed_treshold(g_i_minus1,r, sig
     return g_i, boolean, rr
 
 def time_before_detection(sig, Dthet, nb_of_iteration):
-    r = [i/nb_of_values_of_r for i in range(1, nb_of_values_of_r)]
+    r = [i/(nb_of_values_of_r) for i in range(1, int(nb_of_values_of_r))]
     nb_of_values = []
     rs = []
     for p in range(nb_of_iteration):
-        i = 1
+
         g_i = [0 for i in range(1, nb_of_values_of_r)]
+        for i in range (nb_of_initial_values):
+            x_i = np.random.normal(0, sig)
+            g_i, detected, rr = update_function_and_find_if_detected_treshold_moving(g_i, r, sig, 0, x_i)
+        i = 1
         x_i = np.random.normal(Dthet, sig)
         g_i, detected, rr = update_function_and_find_if_detected_treshold_moving(g_i, r, sig, 0, x_i)
         if detected:
             rs.append(rr)
         while detected is False:
-            x_i = np.random.normal(0, sig)
+            x_i = np.random.normal(Dthet, sig)
             g_i, detected, rr = update_function_and_find_if_detected_treshold_moving(g_i, r, sig, 0, x_i)
             i += 1
             if detected:
@@ -163,9 +168,9 @@ def plot_theoritical_ARL():
 def plot_ARL():
     std = []
     mean = []
-    nb_of_iteration = 1000
-    Dthet = 0.3
-    pas = 0.1
+    nb_of_iteration = 10000
+    Dthet = 0
+    pas = 0.01
     Dthets = []
     while Dthet < 1:
         Dthets.append(Dthet)
@@ -174,8 +179,8 @@ def plot_ARL():
         std.append(2.567 * b / math.sqrt(nb_of_iteration))
         #print("ok")
         Dthet += pas
-        #pas *= 1.1
-        nb_of_iteration *=0.99
+        pas *= 1.2
+        nb_of_iteration *=0.9
         stri = '(' + str(Dthets[-1]) + ',' + str(mean[-1]) + ') +- (0,' + str(std[-1]) + ')'
         print(stri)
     stri = ''
@@ -184,10 +189,10 @@ def plot_ARL():
     print(stri)
 
 if __name__ == "__main__":
-    plot_ARL()
-    #a, b = time_before_detection(1, 0.1, 1000)
-    #print(a)
-    #print(2.567 * b / math.sqrt(nb_of_iteration))
+    #plot_ARL()
+    a, b = time_before_detection(1, 0, 50000)
+    print(a)
+    print(2.567 * b / math.sqrt(50000))
     #print(find_threshold_for_mean_nmb_of_false_detection(1, 120))
     #find_relationchip_r_parameter_having_same_average_false_positive(1, 120, 0.01)
     #plot_iterations_for_a_fixed_r_andDthet([0.001,0.002, 0.003,  0.006, 0.01, 0.015, 0.020, 0.025, 0.03,
