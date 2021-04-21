@@ -46,10 +46,11 @@ def mean_detection_time_adapted_one_by_one(Dthet, nb_of_iteration):
     i = 0
     for sig in sigs:
         #print(1/(q * math.pow(sig,2)) * means[i])
-        mean += 1/(q * math.pow(sig, 2)) * means[i]
+        mean += math.pow(1/(q * math.pow(sig, 2)), 2) * means[i]
         #std += math.sqrt(1/(q * sig)) * stds[i]
         i += 1
     std_result = 0
+    mean *= len(sigs)
     i = 0
     for s in stds:
         std_result += s ** 2 * 1/(q * math.pow(sigs[i], 2))
@@ -58,7 +59,7 @@ def mean_detection_time_adapted_one_by_one(Dthet, nb_of_iteration):
     return mean, std_result
 
 
-def time_before_detection(sig, Dthet, nb_of_iteration):
+def time_before_detection(sig, Dthet, nb_of_iteration, h=h):
     nb_of_values = []
     for p in range(nb_of_iteration):
         X_bar = []
@@ -118,14 +119,18 @@ if __name__ == "__main__":
     #print(a)
     #print(2.567 * b / math.sqrt(nb_of_iteration))
     #plot_ARL()
+    for sig in sigs:
+        a, b = time_before_detection(sig, 3, 10000, h=20)
+        print("########")
+        print(sig)
+        print(a)
 
+    #Dthet = 0.5
+    #nb_of_iteration = 1000
+    #a, b = mean_detection_time_one_by_one(Dthet, nb_of_iteration)
+    #print(a)
+    #print(2.567 * b / math.sqrt(nb_of_iteration))
 
-    Dthet = 0.5
-    nb_of_iteration = 1000
-    a, b = mean_detection_time_one_by_one(Dthet, nb_of_iteration)
-    print(a)
-    print(2.567 * b / math.sqrt(nb_of_iteration))
-
-    a, b = mean_detection_time_adapted_one_by_one(Dthet, nb_of_iteration)
-    print(a)
-    print(2.567 * b / math.sqrt(nb_of_iteration))
+    #a, b = mean_detection_time_adapted_one_by_one(Dthet, nb_of_iteration)
+    #print(a)
+    #print(2.567 * b / math.sqrt(nb_of_iteration))

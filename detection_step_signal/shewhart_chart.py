@@ -13,7 +13,7 @@ nb_of_initial_values = 100
 nb_of_Dthet = 100
 Dthets = [(i * 1 / nb_of_Dthet) for i in range(nb_of_Dthet)] #thet step for ARL function
 sig = 1
-nb_of_sensors = 20
+nb_of_sensors = 10
 sigs = [(0.5 + i*2/nb_of_sensors) for i in range(nb_of_sensors)]
 #sigs = [2 for i in range(nb_of_sensors)]
 
@@ -113,10 +113,11 @@ def mean_detection_time_adapted_one_by_one(Dthet, nb_of_iteration):
     i = 0
     for sig in sigs:
         #print(1/(q * math.pow(sig,2)) * means[i])
-        mean += 1/(q * math.pow(sig, 2)) * means[i]
+        mean += math.pow(1/(q * math.pow(sig, 2)), 2) * means[i]
         #std += math.sqrt(1/(q * sig)) * stds[i]
         i += 1
     std_result = 0
+    mean *= len(sigs)
     i = 0
     for s in stds:
         std_result += s ** 2 * 1/(q * math.pow(sigs[i], 2))
@@ -271,4 +272,10 @@ if __name__ == "__main__":
     #print(a)
     #print(2.567 * b / math.sqrt(nb_of_iteration))
 
-    quantify_false_positives(sigs)
+    #quantify_false_positives(sigs)
+
+    for sig in sigs:
+        a, b = time_before_detection(sig, 3, 10000, h=10)
+        print("########")
+        print(sig)
+        print(a)
