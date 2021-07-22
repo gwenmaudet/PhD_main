@@ -9,14 +9,14 @@ variance_cov = 5
 
 
 #sensor informations
-nb_of_information_sent = 10
+nb_of_information_sent = 5
 sensors_infos = [x * 0.1 for x in range(1, 16)]
 
 
 #experience
-t_of_exp = [1, 20 ]
+t_of_exp = [0, 20 ]
 def function_to_follow(t):
-    return 0.75 + 10 *sin(2 * pi * t /10)
+    return  5 *sin(2 * pi * t /10)
 
 """def function_to_follow(t):
     if 0<=t%2 <=1:
@@ -28,6 +28,19 @@ def function_to_follow(t):
 nb_of_points = 1000
 points_for_estimation = [t_of_exp[0] + (i * (t_of_exp[1] - t_of_exp[0])/nb_of_points) for i in range (nb_of_points)]
 
+
+
+def periodic_recept(T,debut, nb_of_item, sig):
+    times = []
+    rep = []
+    receptions = []
+    for i in range(nb_of_item):
+        t = debut + i*T
+        times.append(t)
+        y = np.random.normal(function_to_follow(t), sig)
+        #rep.append(np.random.normal(function_to_follow(t), sig))
+        receptions.append({'var': sig, 't': t, 'y': y})
+    return receptions
 
 
 
@@ -160,14 +173,14 @@ def modelise():
     real_value = []
     for t in points_for_estimation:
         real_value.append(function_to_follow(t))
-    #plt.plot(points_for_estimation, real_value, '--', label='real physical quantity variations')
+    plt.plot(points_for_estimation, real_value, '--', label='real physical quantity variations')
 
     plt.plot(x_1, rep_1, 'ro',color='red', label='receptions from sensor 1')
     plt.plot(x_2, rep_2,'ro', color='yellow', label='receptions from sensor 2')
     plt.plot(x_3, rep_3,'ro', color='green', label='receptions from sensor 3')
     plt.plot(x_4, rep_4,'ro', color='blue', label='receptions from sensor 4')
-    #plt.plot(points_for_estimation, model, label='estimation curve' )
-    #plt.ylim(-10, 10)
+    plt.plot(points_for_estimation, model, label='estimation curve' )
+    plt.ylim(-7, 7)
     #plt.plot(points_for_estimation, low_bound, 'r-', alpha=0.5)
     #plt.plot(points_for_estimation, high_bound, 'r-', alpha=0.5)
     #plt.fill_between(points_for_estimation, low_bound, high_bound, color='b', alpha=.1,label='95% confidence interval')
@@ -178,5 +191,102 @@ def modelise():
     plt.ylabel('physical quantity R(t)')
     plt.show()
 
+
+def modelise_2():
+    X = []
+    Y = []
+    recept = []
+    nb_of_item = nb_of_information_sent
+    receptions = periodic_recept(4, 0, nb_of_item, 0.05)
+    x = []
+    y = []
+    for rec in receptions:
+        recept.append(rec)
+        X.append(rec['t'])
+        x.append(rec['t'])
+        y.append(rec['y'])
+        Y.append(rec['y'])
+    plt.plot(x, y, 'ro', color='red', label='receptions from sensor 1')
+
+
+    receptions = periodic_recept(4, 1, nb_of_item, 0.5)
+    x = []
+    y = []
+    for rec in receptions:
+        recept.append(rec)
+        X.append(rec['t'])
+        x.append(rec['t'])
+        y.append(rec['y'])
+        Y.append(rec['y'])
+    plt.plot(x, y, 'ro', color='yellow', label='receptions from sensor 2')
+
+
+    receptions = periodic_recept(4, 2, nb_of_item, 1)
+    x = []
+    y = []
+    for rec in receptions:
+        recept.append(rec)
+        X.append(rec['t'])
+        x.append(rec['t'])
+        y.append(rec['y'])
+        Y.append(rec['y'])
+    plt.plot(x, y, 'ro', color='green', label='receptions from sensor 3')
+
+
+    receptions = periodic_recept(4, 3, nb_of_item, 1.5)
+    x = []
+    y = []
+    for rec in receptions:
+        recept.append(rec)
+        X.append(rec['t'])
+        x.append(rec['t'])
+        y.append(rec['y'])
+        Y.append(rec['y'])
+    plt.plot(x, y, 'ro', color='blue', label='receptions from sensor 4')
+
+    n = len(Y)
+    K = define_K_matrix(recept, theta, variance_cov)
+    inv_K = np.linalg.inv(K)
+    y = np.zeros((n, 1))
+    for i in range(n):
+        y[i] = recept[i]['y']
+    model = []
+    var_model = []
+    real_value = []
+    un = np.ones(n)
+    mu = np.dot(np.transpose(un), np.dot(inv_K, un))
+    mu = np.dot(mu, np.dot(np.transpose(un), inv_K))
+    mu = np.dot(mu, y)[0]
+
+    for t in points_for_estimation:
+        k = define_k_matrix(recept, t, theta, variance_cov)
+        m, v = modelise_with_simple_kriging(k, inv_K, y)
+        # m, v = modelise_with_ordinary_kriging(k, inv_K, y, mu, un)
+        model.append(m)
+        var_model.append(v)
+        real_value.append(function_to_follow(t))
+        # print(real_value)
+    low_bound = []
+    high_bound = []
+    for (item1, item2) in zip(model, var_model):
+        low_bound.append(item1 - 1.96 * item2)
+        high_bound.append((item1 + 1.96 * item2))
+    real_value = []
+    for t in points_for_estimation:
+        real_value.append(function_to_follow(t))
+
+    plt.plot(points_for_estimation, real_value, '--', label='real physical quantity variations')
+    plt.plot(points_for_estimation, model, label='estimation curve')
+
+    plt.ylim(-7, 7)
+    # plt.plot(points_for_estimation, low_bound, 'r-', alpha=0.5)
+    # plt.plot(points_for_estimation, high_bound, 'r-', alpha=0.5)
+    # plt.fill_between(points_for_estimation, low_bound, high_bound, color='b', alpha=.1,label='95% confidence interval')
+
+    plt.title("kriging solution")
+    plt.xlabel("Time t")
+    plt.ylabel('physical quantity R(t)')
+    plt.show()
+
 if __name__ == "__main__":
-    modelise()
+    modelise_2()
