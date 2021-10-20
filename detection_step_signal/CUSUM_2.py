@@ -199,6 +199,29 @@ def main_2():
     plt.ylabel("temps moyen avant de lever une alerte de detection de changement")
     plt.title("comparaisons de stratégies d'émission pour des problèmes de detection en utilisant la méthode CUSUM")
     plt.show()
+
+
+
+def comparison_of_different_scheduling(nb_of_first,nb_of_second,sigma_first, sigma_second, nb_of_cases):
+    sigmas = []
+    for i in range(nb_of_first):
+        sigmas.append(sigma_first)
+    for i in range(nb_of_second):
+        sigmas.append(sigma_second)
+
+    nb_of_iteration = 1000
+    h = 5
+    Dthet = 1
+
+    means = []
+    stds = []
+    for i in range(nb_of_cases):
+        mean, std = time_before_detection_step_signal(sigmas, Dthet, nb_of_iteration, h=h)
+        means.append(mean)
+        stds.append(std/math.sqrt(nb_of_iteration))
+    print(means)
+    print(stds)
+
 if __name__ == "__main__":
     # a, b = time_before_detection(1, 0, 100000)
     # print(a)
@@ -206,4 +229,13 @@ if __name__ == "__main__":
     # plot_ARL()
     # plot_LGAARL()
     #plot_CUSUM_principle()
-    main_2()
+    #main_2()
+
+    nb_of_first = 5
+    nb_of_second = 5
+    sigma_first = 0.1
+    sigma_second = 1
+    nb_of_cases = 200
+
+    comparison_of_different_scheduling(nb_of_first, nb_of_second, sigma_first, sigma_second, nb_of_cases)
+

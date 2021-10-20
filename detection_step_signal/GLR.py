@@ -5,7 +5,7 @@ import random
 import time
 import matplotlib.pyplot as plt
 
-h = 10
+h = 40
 
 limit_number_of_taken_values = 200
 nb_of_initial_values = 100
@@ -19,43 +19,47 @@ sigs = [0.1, 0.5, 1.5]
 nb_of_sensors = len(sigs)
 
 
-def time_before_detection_step_signal(sigs, Dthet, nb_of_iteration, h=h):
+def time_before_detection_step_signal(sigs, Dthet, nb_of_iteration, probas=[1] * len(sigs), h=h):
     n= len(sigs)
     nb_of_values = []
     for p in range(nb_of_iteration):
         #random.shuffle(sigs)
         X_bar = []  # somme y_i -mu_0 / sigma i
-        nb_of_initial_values =random.randint(100, 125)
+        nb_of_initial_values =random.randint(200, 200 + n )
         for i in range(nb_of_initial_values):
             sig = sigs[i % n]
-            x = np.random.normal(0, sig)
-            m = len(X_bar)
-            for j in range(m):
-                X_bar[j] = X_bar[j] + x / sig
-            X_bar.append(x)
-            # print(reception_error)
-            # time.sleep(1)
-        i = nb_of_initial_values
+            p = random.random()
+            if p<probas[i % n]:
+                x = np.random.normal(0, sig)
+                m = len(X_bar)
+                for j in range(m):
+                    X_bar[j] = X_bar[j] + x / sig
+                X_bar.append(x)
+                # print(reception_error)
+                # time.sleep(1)
         detected = False
+        i = nb_of_initial_values
         while detected is False:
             sig = sigs[i % n]
-            x = np.random.normal(Dthet, sig)
-            """m = len(X_bar)
-            if m >= limit_number_of_taken_values:
-                X_bar = X_bar[1:]
-                m -= 1"""
-            for j in range(m):
-                X_bar[j] = X_bar[j] + x / sig
-                # print((reception_error[j] * (n-j))**2)
-            X_bar.append(x)
+            p = random.random()
+            if p < probas[i % n]:
+                x = np.random.normal(Dthet, sig)
+                """m = len(X_bar)
+                if m >= limit_number_of_taken_values:
+                    X_bar = X_bar[1:]
+                    m -= 1"""
+                for j in range(m):
+                    X_bar[j] = X_bar[j] + x / sig
+                    # print((reception_error[j] * (n-j))**2)
+                X_bar.append(x)
+                for j in range(m + 1):
+                    if (abs(X_bar[j]) / math.sqrt(m - j + 1) > h):
+                        detected = True
+                        # print(X_bar)
+                        # print(j)
             i += 1
-            for j in range(m + 1):
-                if (abs(X_bar[j]) / math.sqrt(m - j + 1) > h):
-                    detected = True
-                    # print(X_bar)
-                    # print(j)
-        nb_of_values.append(i)
-    return statistics.mean(nb_of_values), statistics.stdev(nb_of_values)
+        nb_of_values.append(i - nb_of_initial_values)
+    return statistics.mean(nb_of_values), statistics.stdev(nb_of_values), nb_of_values
 
 def necessary_nb_of_value_GSC(sig, Dthet, h):
     return math.pow(h * sig / Dthet, 2)
@@ -191,7 +195,7 @@ def main_1(Dthet):
     sigs = [1, 1.5, 2]
     nb_of_sensors = len(sigs)
     for sig in sigs:
-        mean, std = time_before_detection_step_signal([sig], Dthet, int(nb_of_iteration / math.sqrt(len(sigs))))
+        mean, std,z = time_before_detection_step_signal([sig], Dthet, int(nb_of_iteration / math.sqrt(len(sigs))))
         means.append(mean)
         stds.append(std / math.sqrt(nb_of_iteration / math.sqrt(len(sigs))))
     q = 0
@@ -225,7 +229,7 @@ def main_1(Dthet):
         opti += math.pow(1 / (q * m), 2) * m
     opti *= len(sigs)
 
-    mean, std = time_before_detection_step_signal(sigs, Dthet, nb_of_iteration)
+    mean, std, z = time_before_detection_step_signal(sigs, Dthet, nb_of_iteration)
     """
     print("one by one")
     print(mean_one_by_one)
@@ -336,6 +340,181 @@ def main_3():
     print(statistics.mean(means))
     print(statistics.mean(stds))
 
+
+def comparison_of_different_scheduling(nb_of_first,nb_of_second,sigma_first, sigma_second, first_proba, second_proba, nb_of_cases):
+    infos = []
+    for i in range(nb_of_first):
+        infos.append([sigma_first,first_proba])
+    for i in range(nb_of_second):
+        infos.append([sigma_second, second_proba])
+
+    nb_of_iteration = 1000
+    h = 40
+    Dthet = 0.5
+    means = []
+    stds = []
+    for i in range(nb_of_cases):
+        random.shuffle(infos)
+        sigmas = []
+        probas = []
+        for elt in infos:
+            sigmas.append(elt[0])
+            probas.append(elt[1])
+        mean, std, z = time_before_detection_step_signal(sigmas, Dthet, nb_of_iteration,probas, h)
+        means.append(mean)
+        stds.append(std/math.sqrt(nb_of_iteration))
+    means = sorted(means)
+    n = len(means)
+    to_print = ""
+    tot = 0
+    for elt in means:
+        tot += 1/n
+        to_print += "(" + str(elt) +"," + str(tot) + ') '
+    print(to_print)
+
+def comparison_of_two_opposite_schedulings(nb_of_first,nb_of_second,sigma_first, sigma_second, first_proba, second_proba):
+
+    nb_of_iteration = 50000
+    h = 40
+    Dthet = 1
+
+    #### construction of the strategy where in the first time it is always the fisrt cat, then after the second cat..
+    infos = []
+    for i in range(nb_of_first):
+        infos.append([sigma_first, first_proba])
+    for i in range(nb_of_second):
+        infos.append([sigma_second, second_proba])
+    sigmas = []
+    probas = []
+    for elt in infos:
+        sigmas.append(elt[0])
+        probas.append(elt[1])
+    mean, std, nb_of_value_before_detection = time_before_detection_step_signal(sigmas, Dthet, nb_of_iteration, probas, h)
+    print(mean)
+    nb_of_value_before_detection = sorted(nb_of_value_before_detection)
+    values = []
+    nb_of_items = []
+    values.append(nb_of_value_before_detection.pop(0))
+    nb_of_items.append(1)
+    for elt in nb_of_value_before_detection:
+        if elt ==values[-1]:
+            nb_of_items[-1] += 1
+        else:
+            values.append(elt)
+            nb_of_items.append(1)
+
+    n = len(nb_of_value_before_detection)
+    to_print = ""
+    tot = 0
+    for elt in zip(values, nb_of_items):
+        tot += elt[1] / n
+        to_print += "(" + str(elt[0]) + "," + str(tot) + ') '
+    print(to_print)
+
+
+
+    pgcd = math.gcd(nb_of_first, nb_of_second)
+    infos = []
+    for i in range(int(nb_of_first/pgcd)):
+        infos.append([sigma_first,first_proba])
+    for i in range(int(nb_of_second/pgcd)):
+        infos.append([sigma_second, second_proba])
+    sigmas = []
+    probas = []
+    for elt in infos:
+        sigmas.append(elt[0])
+        probas.append(elt[1])
+    mean, std, nb_of_value_before_detection = time_before_detection_step_signal(sigmas, Dthet, nb_of_iteration, probas,
+                                                                           h)
+    print(mean)
+    nb_of_value_before_detection = sorted(nb_of_value_before_detection)
+    values = []
+    nb_of_items = []
+    values.append(nb_of_value_before_detection.pop(0))
+    nb_of_items.append(1)
+    for elt in nb_of_value_before_detection:
+        if elt == values[-1]:
+            nb_of_items[-1] += 1
+        else:
+            values.append(elt)
+            nb_of_items.append(1)
+
+    n = len(nb_of_value_before_detection)
+    to_print = ""
+    tot = 0
+    for elt in zip(values, nb_of_items):
+        tot += elt[1] / n
+        to_print += "(" + str(elt[0]) + "," + str(tot) + ') '
+    print(to_print)
+
+
+
+
+def plot_CDF_of_one_random_solution(nb_of_first,nb_of_second,sigma_first, sigma_second, first_proba, second_proba):
+    Dthet = 0.5
+    nb_of_iteration = 10000
+    h = 40
+    infos = []
+    for i in range(nb_of_first):
+        infos.append([sigma_first, first_proba])
+    for i in range(nb_of_second):
+        infos.append([sigma_second, second_proba])
+    random.shuffle(infos)
+    sigmas = []
+    probas = []
+    for elt in infos:
+        sigmas.append(elt[0])
+        probas.append(elt[1])
+    mean, std, nb_of_value_before_detection = time_before_detection_step_signal(sigmas, Dthet, nb_of_iteration, probas, h)
+    print(mean)
+    nb_of_value_before_detection = sorted(nb_of_value_before_detection)
+    values = []
+    nb_of_items = []
+    values.append(nb_of_value_before_detection.pop(0))
+    nb_of_items.append(1)
+    for elt in nb_of_value_before_detection:
+        if elt == values[-1]:
+            nb_of_items[-1] += 1
+        else:
+            values.append(elt)
+            nb_of_items.append(1)
+
+    n = len(nb_of_value_before_detection)
+    to_print = ""
+    tot = 0
+    for elt in zip(values, nb_of_items):
+        tot += elt[1] / n
+        to_print += "(" + str(elt[0]) + "," + str(tot) + ') '
+    print(to_print)
+
+def test():
+
+
+    values = []
+    for i in range(100000):
+        values.append(np.random.normal(0,0.1)/0.1)
+    values = sorted(values)
+    plt.plot(values)
+    plt.show()
+    values = []
+    for i in range(100000):
+        values.append(np.random.normal(0, 1))
+    values = sorted(values)
+    plt.plot(values)
+    plt.show()
+
+def function_of_the_performance_according_to_the_error_noise():
+    Dthet = 1
+    nb_of_iteration = 10000
+    h = 40
+    sigs = [i/10 + 0.1 for i in range(20)]
+    perfs = []
+    for sig in sigs:
+        mean, std, values = time_before_detection_step_signal([sig], Dthet, nb_of_iteration, probas=[1] * len(sigs), h=h)
+        perfs.append(mean)
+    plt.plot(sigs,perfs)
+    plt.show()
+
 if __name__ == "__main__":
     # quantify_false_positives(sigs)
 
@@ -346,5 +525,18 @@ if __name__ == "__main__":
     #    print(a)
 
     # plot_LGAARL()
-    main_3()
-    #plot_ARL()
+    #main_3()
+    """nb_of_first = 50
+    nb_of_second = 50
+    sigma_first = 0.1
+    sigma_second = 0.1
+    first_proba = 1
+    second_proba = 1
+
+    nb_of_cases = 2
+
+    comparison_of_different_scheduling(nb_of_first, nb_of_second, sigma_first, sigma_second, first_proba, second_proba, nb_of_cases)
+    """
+    function_of_the_performance_according_to_the_error_noise()
+    #comparison_of_two_opposite_schedulings(nb_of_first, nb_of_second, sigma_first, sigma_second, first_proba, second_proba)
+    #plot_CDF_of_one_random_solution(nb_of_first, nb_of_second, sigma_first, sigma_second, first_proba, second_proba)
